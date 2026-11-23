@@ -18,11 +18,11 @@
 /* 4관: 충돌 뒤에도 남는 그을음, 충돌 분화구, 연기. 2D 사진 위의 연출 레이어입니다. */
 #aftermath{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0;visibility:hidden;transition:opacity 2.5s ease,visibility 0s linear 2.5s;overflow:hidden}
 #aftermath.active{opacity:1;visibility:visible;transition:opacity 2.5s ease}
-/* 충돌 뒤 사진 자체를 무채색·암흑으로 바꾸어 녹색 잎과 풀의 색을 제거합니다. */
-#backdrop.burned{filter:grayscale(1) sepia(.28) brightness(.27) contrast(1.8) !important;transition:filter 2.2s ease}
-#burnscape{position:absolute;inset:0;background:linear-gradient(180deg,rgba(17,15,14,.70) 0%,rgba(34,29,26,.42) 48%,rgba(13,12,12,.91) 100%),radial-gradient(ellipse at 49% 67%,transparent 5%,rgba(8,8,8,.66) 70%);mix-blend-mode:normal}
-#burnscape:after{content:'';position:absolute;inset:0;opacity:.82;background:radial-gradient(ellipse at 16% 81%,#8b81726b 0 6%,transparent 18%),radial-gradient(ellipse at 79% 84%,#92877b66 0 8%,transparent 23%),radial-gradient(ellipse at 43% 90%,#9b8e8066 0 10%,transparent 27%);filter:blur(15px)}
-.ash-haze{position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,26,27,.68),rgba(66,50,42,.36) 42%,rgba(18,15,13,.6));mix-blend-mode:multiply}
+/* 충돌 후 녹색은 제거하되 나무·산·지형 윤곽이 보이도록 밝기와 대비를 유지합니다. */
+#backdrop.burned{filter:grayscale(1) sepia(.16) brightness(.83) contrast(1.24) !important;transition:filter 2.2s ease}
+#burnscape{position:absolute;inset:0;background:linear-gradient(180deg,rgba(35,32,30,.18) 0%,rgba(57,49,44,.13) 48%,rgba(38,34,31,.30) 100%),radial-gradient(ellipse at 49% 67%,transparent 5%,rgba(30,28,26,.18) 70%);mix-blend-mode:normal}
+#burnscape:after{content:'';position:absolute;inset:0;opacity:.48;background:radial-gradient(ellipse at 16% 81%,#8b81726b 0 6%,transparent 18%),radial-gradient(ellipse at 79% 84%,#92877b66 0 8%,transparent 23%),radial-gradient(ellipse at 43% 90%,#9b8e8066 0 10%,transparent 27%);filter:blur(15px)}
+.ash-haze{position:absolute;inset:0;background:linear-gradient(180deg,rgba(68,62,58,.12),rgba(99,87,78,.09) 42%,rgba(49,44,40,.20));mix-blend-mode:normal}
 .crater{position:absolute;left:50%;top:66%;width:min(54vw,860px);height:min(20vw,270px);transform:translate(-50%,-50%) rotate(-4deg);border-radius:50%;background:radial-gradient(ellipse at 50% 54%,#0d0c0b 0 29%,#2a201b 35%,#513a29 48%,#a17953 59%,#322a25 72%,transparent 75%);box-shadow:0 0 75px 24px #21120d88,0 -15px 35px #e17c3544;filter:blur(1.5px)}
 .crater-inner{position:absolute;inset:25% 20%;border-radius:50%;background:radial-gradient(ellipse,#ff6b1940,#150e0b 60%,transparent 75%)}
 .smoke{position:absolute;bottom:27%;left:48%;width:23vw;height:48vh;border-radius:50%;background:radial-gradient(ellipse at bottom,#433b36cc,#2d2927a0 40%,transparent 72%);filter:blur(32px);animation:smoke-drift 7s ease-in-out infinite alternate}
