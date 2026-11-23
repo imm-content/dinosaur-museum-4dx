@@ -22,7 +22,7 @@
 <header><div class="brand"><div class="eyebrow">IMMERSIVE EXHIBITION · 4DX STYLE</div><h1>살아있는 공룡박물관</h1><p>시간을 거슬러, 중생대의 숨결 속으로</p></div><div class="topactions"><button id="sound" aria-pressed="false">🔇 효과음</button><button id="voice" aria-pressed="false">🎙️ 음성 안내</button><button id="motion" aria-pressed="true">〰️ 진동 효과</button><button id="reset">⟳ 시점 초기화</button></div></header>
 <aside><div class="section">EXHIBITION HALLS</div><button class="zone active" data-zone="0"><span class="num">01</span><span><strong>시간의 문</strong><small>중생대로의 초대</small></span></button><button class="zone" data-zone="1"><span class="num">02</span><span><strong>초식공룡의 숲</strong><small>거대한 생명의 발걸음</small></span></button><button class="zone" data-zone="2"><span class="num">03</span><span><strong>포식자의 계곡</strong><small>티라노사우루스 포효</small></span></button><button class="zone" data-zone="3"><span class="num">04</span><span><strong>멸종의 순간</strong><small>운석 충돌 시뮬레이션</small></span></button></aside>
 <section id="right" aria-live="polite"><div class="eyebrow" id="kicker">WELCOME TO THE MESOZOIC</div><h2 id="name">공룡의 시대</h2><div class="era" id="era">약 2억 5,200만 ~ 6,600만 년 전</div><p id="description">공룡이 지구를 지배하던 시대. 전시관을 선택하고 공룡을 클릭해 보세요. 공룡을 드래그하면 해당 공룡만 회전합니다. 빈 공간을 드래그해도 카메라는 회전하지 않습니다.</p><div id="experience"><button class="primary" id="action">🦖 공룡 만나기</button><button class="secondary" id="next">다음 전시관 →</button></div></section>
-<div id="hint">공룡 드래그: 해당 공룡만 회전 · 빈 공간 드래그: 화면 고정 · 휠: 확대/축소</div><div id="credit">3D 공룡 모델: 각 원저작자 라이선스 확인 필요</div>
+<div id="hint">공룡 드래그: 해당 공룡만 회전 · 빈 공간 드래그: 화면 고정 · 휠: 선택 공룡만 확대/축소</div><div id="credit">3D 공룡 모델: 각 원저작자 라이선스 확인 필요</div>
 <div id="bottom"><div class="label">DINOSAUR COLLECTION · 전시 공룡 선택</div><div id="cards"></div></div><div id="toast" role="status"></div>
 <div id="loader"><div style="font-size:44px">🦕</div><div style="color:#7bd5bb;letter-spacing:.25em;font-size:11px">PREHISTORIC EXPERIENCE</div><h2>살아있는 공룡박물관</h2><p>실제 3D 공룡 모델을 불러오고 있습니다.<br>모델 파일이 많으면 잠시 걸릴 수 있습니다.</p><div id="bar"><div id="fill"></div></div><div id="status">전시관 준비 중...</div><button id="enter">전시관 입장하기 →</button></div>
 <script type="module">
@@ -31,7 +31,7 @@ import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 const $=s=>document.querySelector(s);const scene=new THREE.Scene();scene.background=null;scene.fog=null;
 const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});renderer.setClearColor(0x000000,0);renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.45;$('#stage').appendChild(renderer.domElement);
-const camera=new THREE.PerspectiveCamera(54,innerWidth/innerHeight,.1,350);camera.position.set(0,9,34);const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.enableRotate=false;controls.enablePan=false;controls.enableZoom=true;controls.minDistance=7;controls.maxDistance=65;controls.maxPolarAngle=Math.PI*.49;controls.target.set(0,4,0);
+const camera=new THREE.PerspectiveCamera(54,innerWidth/innerHeight,.1,350);camera.position.set(0,9,34);const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.enableRotate=false;controls.enablePan=false;controls.enableZoom=false;controls.minDistance=7;controls.maxDistance=65;controls.maxPolarAngle=Math.PI*.49;controls.target.set(0,4,0);
 scene.add(new THREE.HemisphereLight(0x8bc3df,0x3b3427,2.0));const sun=new THREE.DirectionalLight(0xffe1ac,3.0);sun.position.set(-17,27,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-75;sun.shadow.camera.right=75;sun.shadow.camera.top=75;sun.shadow.camera.bottom=-75;scene.add(sun);
 // 배경은 실제 업로드된 PNG를 화면 전체에 사진 그대로 표시합니다.
 // 2D 배경을 가짜 360도 텍스처로 사용하지 않으며, 삼각형 나무·원형 전시대·가짜 바위는 생성하지 않습니다.
@@ -91,12 +91,12 @@ function loadOne(s){return new Promise(resolve=>loader.load('assets/'+encodeURIC
  // GLB 내부 좌표와 전시관 좌표를 분리합니다. 이전 버전에서는 이 보정값이 전시관 변경 시 사라졌습니다.
  const pivot=new THREE.Group();root.position.set(-center.x,-scaled.min.y,-center.z);pivot.add(root);
  root.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.userData.spec=s}});
- scene.add(pivot);s.object=pivot;s.origin=pivot.position.clone();s.phase=(specs.indexOf(s)*2.39996)%6.28318;s.turnOffset=0;s.dragging=false;s.patrolSpeed=.23+(specs.indexOf(s)%5)*.095;s.patrolRange=.10+(specs.indexOf(s)%4)*.095;s.object.visible=false;models.push(s);
+ scene.add(pivot);s.object=pivot;s.origin=pivot.position.clone();s.phase=(specs.indexOf(s)*2.39996)%6.28318;s.turnOffset=0;s.zoomFactor=1;s.dragging=false;s.patrolSpeed=.23+(specs.indexOf(s)%5)*.095;s.patrolRange=.10+(specs.indexOf(s)%4)*.095;s.object.visible=false;models.push(s);
  if(g.animations.length){const mixer=new THREE.AnimationMixer(root);const clip=g.animations.find(c=>/idle|walk|breath/i.test(c.name))||g.animations[0];mixer.clipAction(clip).play();mixers.push(mixer)}
  resolve(true)
  }catch(e){s.failed=true;console.warn(s.file,e);resolve(false)}},undefined,e=>{s.failed=true;console.warn('GLB 로드 실패',s.file,e);resolve(false)}))}
 let completed=0;const results=await Promise.all(specs.map(async s=>{const ok=await loadOne(s);completed++;$('#fill').style.width=(completed/specs.length*100)+'%';$('#status').textContent=`공룡 모델 ${completed}/${specs.length} 확인 중 · 성공 ${models.length}개`;return ok}));$('#status').textContent=`준비 완료 · ${results.filter(Boolean).length}개 모델 로드 / ${specs.length}개 요청`;$('#enter').style.display='block';if(!models.length)$('#status').textContent='모델을 불러오지 못했습니다. assets 폴더명과 파일명을 확인하세요.';renderCards();
-$('#enter').onclick=()=>{$('#loader').remove();setZone(0);toast('전시관에 오신 것을 환영합니다. 공룡을 선택해 보세요!')};document.querySelectorAll('.zone').forEach(b=>b.onclick=()=>setZone(+b.dataset.zone));$('#next').onclick=()=>setZone((zone+1)%4);$('#reset').onclick=()=>{selected=null;setCamera(0,0,zone===0?30:34);renderCards()};$('#action').onclick=()=>{if(zone===3){meteorEvent();return}if(zone===2||selected?.id==='trex'||selected?.id==='trex2'||selected?.id==='trex3'){roar();return}if(selected){const p=cameraFor(selected);setCamera(p.x,p.z,12);toast(selected.name+' 가까이 관찰하기');return}setZone(zone===0?1:zone);tone(65,.6,'triangle',.08)};
+$('#enter').onclick=()=>{$('#loader').remove();setZone(0);toast('전시관에 오신 것을 환영합니다. 공룡을 선택해 보세요!')};document.querySelectorAll('.zone').forEach(b=>b.onclick=()=>setZone(+b.dataset.zone));$('#next').onclick=()=>setZone((zone+1)%4);$('#reset').onclick=()=>{selected=null;for(const s of models){s.zoomFactor=1;if(s.object)s.object.scale.setScalar(1)}setCamera(0,0,zone===0?30:34);renderCards();toast('모든 공룡의 크기와 카메라 시점을 초기화했습니다.')};$('#action').onclick=()=>{if(zone===3){meteorEvent();return}if(zone===2||selected?.id==='trex'||selected?.id==='trex2'||selected?.id==='trex3'){roar();return}if(selected){const p=cameraFor(selected);setCamera(p.x,p.z,12);toast(selected.name+' 가까이 관찰하기');return}setZone(zone===0?1:zone);tone(65,.6,'triangle',.08)};
 $('#sound').onclick=()=>{sound=!sound;$('#sound').setAttribute('aria-pressed',String(sound));$('#sound').textContent=sound?'🔊 효과음':'🔇 효과음';if(sound)tone(380,.16,'sine',.08)};$('#voice').onclick=()=>{voice=!voice;$('#voice').setAttribute('aria-pressed',String(voice));$('#voice').textContent=voice?'🎙️ 음성 켜짐':'🎙️ 음성 안내';if(!voice&&'speechSynthesis'in window)speechSynthesis.cancel();if(voice)narrate($('#name').textContent+'. '+$('#description').textContent)};$('#motion').onclick=()=>{move=!move;$('#motion').setAttribute('aria-pressed',String(move));$('#motion').textContent=move?'〰️ 진동 효과':'— 진동 꺼짐'};if(matchMedia('(prefers-reduced-motion: reduce)').matches){move=false;$('#motion').setAttribute('aria-pressed','false');$('#motion').textContent='— 진동 꺼짐'}
  const ray=new THREE.Raycaster(),pointer=new THREE.Vector2();
 let gesture=null;
@@ -111,11 +111,26 @@ function hitDinosaur(e){
  while(obj&&!obj.userData.spec)obj=obj.parent;
  return obj?.userData.spec||null;
 }
+// v4: 휠은 카메라 줌이 아니라 선택한 공룡 한 마리의 GLB pivot 크기만 변경합니다.
+// 공룡 위에서 휠을 돌리면 그 공룡을 자동 선택하고, 빈 배경에서는 기존 선택을 사용합니다.
+renderer.domElement.addEventListener('wheel',e=>{
+ e.preventDefault();
+ const hovered=hitDinosaur(e);
+ if(hovered && selected!==hovered)selectModel(hovered);
+ const target=hovered||selected;
+ if(!target||!target.object||!target.object.visible){
+  toast('먼저 공룡 한 마리 또는 아래 공룡 카드를 선택해 주세요.');
+  return;
+ }
+ const step=e.deltaY<0?1.10:1/1.10;
+ target.zoomFactor=THREE.MathUtils.clamp((target.zoomFactor||1)*step,.4,2.8);
+ target.object.scale.setScalar(target.zoomFactor);
+}, {passive:false});
 renderer.domElement.addEventListener('pointerdown',e=>{
  if(e.button!==0)return;
  const s=hitDinosaur(e);
  gesture={x:e.clientX,y:e.clientY,lastX:e.clientX,moved:false,s};
- if(s){s.dragging=true;controls.enabled=false;renderer.domElement.setPointerCapture(e.pointerId)}
+ if(s){selectModel(s);s.dragging=true;controls.enabled=false;renderer.domElement.setPointerCapture(e.pointerId)}
 });
 renderer.domElement.addEventListener('pointermove',e=>{
  if(!gesture)return;
